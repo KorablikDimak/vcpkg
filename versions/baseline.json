@@ -9873,7 +9873,7 @@
       "port-version": 0
     },
     "extendedcpp": {
-      "baseline": "1.5.1",
+      "baseline": "1.5.2",
       "port-version": 1
     },
     "telebot": {
