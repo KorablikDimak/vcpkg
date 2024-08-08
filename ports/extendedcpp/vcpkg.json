@@ -1,6 +1,6 @@
 {
   "name" : "extendedcpp",
-  "version-string" : "1.5.2",
+  "version-string" : "1.5.3",
   "port-version": 1,
   "homepage": "https://github.com/KorablikDimak/ExtendedCpp",
   "description" : "A set of libraries that extend standard C++ functionality.",
@@ -11,11 +11,5 @@
   }, {
     "name" : "vcpkg-cmake-config",
     "host" : true
-  }, {
-    "name" : "gtest",
-    "version>=" : "1.14.0"
-  }, {
-    "name" : "benchmark",
-    "version>=" : "1.8.3#2"
   } ]
 }
