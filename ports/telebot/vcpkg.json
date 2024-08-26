@@ -4,7 +4,7 @@
   "port-version": 1,
   "homepage": "https://github.com/KorablikDimak/ApiTelegramBot",
   "description" : "A library for connection to telegram bot api.",
-  "builtin-baseline" : "df74f9f031a4d500c8acf9af1dd1743bd9ffbf1b",
+  "builtin-baseline" : "0113b9f298bd5e0098640cc7344210dc3c42c87d",
   "dependencies" : [ {
     "name" : "boost-asio",
     "version>=" : "1.84.0"
