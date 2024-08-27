@@ -1,10 +1,10 @@
 {
   "name" : "openai",
-  "version-string" : "1.1.2",
+  "version-string" : "1.1.3",
   "port-version": 1,
   "homepage": "https://github.com/KorablikDimak/ApiOpenAI",
   "description" : "Library for connection to open ai.",
-  "builtin-baseline" : "7c66895cb039ff0be944eecb88e4a64aa497947c",
+  "builtin-baseline" : "0ded6195ca206ebc078c1401687ecee4e2f21408",
   "dependencies" : [ {
     "name" : "boost-asio",
     "version>=" : "1.84.0"
