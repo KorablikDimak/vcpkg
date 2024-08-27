@@ -1,10 +1,10 @@
 {
   "name" : "telebot",
-  "version-string" : "1.0.0",
+  "version-string" : "1.1.0",
   "port-version": 1,
   "homepage": "https://github.com/KorablikDimak/ApiTelegramBot",
   "description" : "A library for connection to telegram bot api.",
-  "builtin-baseline" : "0113b9f298bd5e0098640cc7344210dc3c42c87d",
+  "builtin-baseline" : "301b572065ffdb3ef382258558d7895b0e889c37",
   "dependencies" : [ {
     "name" : "boost-asio",
     "version>=" : "1.84.0"
