@@ -2,7 +2,7 @@ vcpkg_from_github(
         OUT_SOURCE_PATH SOURCE_PATH
         REPO KorablikDimak/ApiOpenAI
         REF "${VERSION}"
-        SHA512 0bb7f5c0851beaa8f1527989dcd4b663fdaa91566f573910e535f746ef4c2f37bb2a5cdfc17585b2c510a15f741576f7ca510a9dbe383dc7adf8910a9f512120
+        SHA512 be118e04168e4b5780c3ac44287b649b6d94bf732288bb3d073d4fe9fdf779cf318c0211dde7dbaccee16d9a1974b69fbaf6bda24a09ade83c03f8ada6a51c86
         HEAD_REF master)
 
 vcpkg_cmake_configure(SOURCE_PATH "${SOURCE_PATH}")
