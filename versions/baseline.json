@@ -9913,7 +9913,7 @@
       "port-version": 1
     },
     "openai": {
-      "baseline": "1.1.4",
+      "baseline": "1.1.6",
       "port-version": 1
     }
   }
