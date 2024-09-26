@@ -2,7 +2,7 @@ vcpkg_from_github(
         OUT_SOURCE_PATH SOURCE_PATH
         REPO KorablikDimak/ApiTelegramBot
         REF "${VERSION}"
-        SHA512 f3799d32df5e2f0f3558875cb7aa8655db293dacb2f6b9b0b5a76f959def8097709368da9497b221b601c350fd2bca35d3c38ecf4d1a9af34c358120e9f00e8f
+        SHA512 89bfd93b15d8b4aa92ebd388de1cf5a33ad1e82bc5e17dd6818ae475185493aa74823dce69d0ae53bf755114e49f82aea88ff1dd621c2144aef0fdae4226f8b6
         HEAD_REF master)
 
 vcpkg_cmake_configure(SOURCE_PATH "${SOURCE_PATH}")
