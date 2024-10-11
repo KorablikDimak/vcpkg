@@ -51,7 +51,7 @@ function New-Password {
 
   $result = New-Object SecureString
   for ($idx = 0; $idx -lt $Length; $idx++) {
-    $result.AppendChar($alphabet[[System.Security.Cryptography.RandomNumberGenerator]::GetInt32($alphabet.Length)])
+    $result.AppendChar($alphabet[(Get-SecureRandom -Maximum $alphabet.Length)])
   }
 
   return $result
@@ -262,7 +262,7 @@ New-AzGalleryImageVersion `
   -GalleryImageDefinitionName 'PrWinWus3-TrustedLaunch' `
   -Name $GalleryImageVersion `
   -Location $Location `
-  -SourceImageId $VMCreated.ID `
+  -SourceImageVMId $VMCreated.ID `
   -ReplicaCount 1 `
   -StorageAccountType 'Premium_LRS' `
   -PublishingProfileExcludeFromLatest `
