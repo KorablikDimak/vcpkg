@@ -2,7 +2,7 @@ vcpkg_from_github(
         OUT_SOURCE_PATH SOURCE_PATH
         REPO KorablikDimak/ExtendedCpp
         REF "${VERSION}"
-        SHA512 05890e40dd45bf73f64dc5d0fbe0c563798540bcc3f86f9a6b075bf4ea17ce540685161734155c75d490dd434d28ee9a4edae25a1c465c8c4bf9489cf3f565fc
+        SHA512 0e677cd88c07d240d0ea55817253a97119bb8eff68f9686a96aab6db37b41c4bba234d826d26e44f4827ddfbfdd8c0baca9d4c45cd7d34bbe3dcdefb2e21ed19
         HEAD_REF master)
 
 vcpkg_cmake_configure(SOURCE_PATH "${SOURCE_PATH}")
