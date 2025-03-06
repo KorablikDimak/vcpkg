@@ -10261,8 +10261,8 @@
       "port-version": 0
     },
     "extendedcpp": {
-      "baseline": "2.1.2",
-      "port-version": 1
+      "baseline": "2.2.0",
+      "port-version": 0
     },
     "telebot": {
       "baseline": "1.1.4",
