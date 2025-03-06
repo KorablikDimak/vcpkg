@@ -2,7 +2,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO tbeu/matio
     REF "v${VERSION}"
-    SHA512 3ede0ce0c328fc79bff75933368d8ec9eea1d8cb28ea32a41bedb3f184e1c3362bb37bfb582838bc954ab0fff8c9dfd5a1e86831e657c06c2b2bd9d1e47020ff
+    SHA512 358318a249e22f5228516309d267593b8da9005de015dc0f59645fbfd7a5001e10be9144f32437acc2f6921d952e03adbaf8b9ca5b6620e191346bb569c04780
     HEAD_REF master
     PATCHES fix-dependencies.patch
 )
@@ -11,10 +11,10 @@ string(COMPARE EQUAL "${VCPKG_LIBRARY_LINKAGE}" "dynamic" BUILD_SHARED)
 
 vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
     FEATURES
-        hdf5            MATIO_WITH_HDF5
+        mat73           MATIO_WITH_HDF5
+        mat73           MATIO_MAT73
         zlib            MATIO_WITH_ZLIB
         extended-sparse MATIO_EXTENDED_SPARSE
-        mat73           MATIO_MAT73
         pic             MATIO_PIC
 )
 
