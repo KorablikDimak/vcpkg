@@ -1,10 +1,10 @@
 {
   "name" : "openai",
-  "version-string" : "1.1.7",
-  "port-version": 1,
+  "version-string" : "1.1.8",
+  "port-version": 0,
   "homepage": "https://github.com/KorablikDimak/ApiOpenAI",
   "description" : "Library for connection to open ai.",
-  "builtin-baseline" : "1f86c5baaa2b7c78ce3ee4550f734f54353f8944",
+  "builtin-baseline" : "92ea8bcc2e63a2843a33f36f8d83659fe9c757a7",
   "dependencies" : [ {
     "name" : "boost-asio",
     "version>=" : "1.84.0"
@@ -13,7 +13,7 @@
     "version>=" : "1.84.0"
   }, {
     "name" : "extendedcpp",
-    "version>=" : "2.0.2#1"
+    "version>=" : "2.2.0"
   }, {
     "name" : "openssl",
     "version>=" : "3.2.1"
