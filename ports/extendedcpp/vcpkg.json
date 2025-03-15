@@ -4,7 +4,7 @@
   "port-version": 0,
   "homepage": "https://github.com/KorablikDimak/ExtendedCpp",
   "description" : "A set of libraries that extend standard C++ functionality.",
-  "builtin-baseline" : "9768309144935d8f39e85025872a0db3b9cc6949",
+  "builtin-baseline" : "41c9cd6ca458070e49c5830cc5a3a9daa9746921",
   "dependencies" : [ {
     "name": "vcpkg-cmake",
     "host": true
