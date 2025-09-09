@@ -2,11 +2,10 @@ vcpkg_from_github(
         OUT_SOURCE_PATH SOURCE_PATH
         REPO duckdb/duckdb
         REF v${VERSION}
-        SHA512 f5bca7a3b6f763b4b1a1f39e53c6f818925584fb44886e291ac3546fe50de545e80d16b4120f0126020e44b601a1b9193f4faad7a3dc8799cda843b1965038f2
-        HEAD_REF master
+        SHA512 8e725d94cfd81989d4f6d206728188e5b290ce3a7f71d89adc6beed91957f965180d34d69d9099d04e35fc402b389de56184875397b29286789bd9c5655595c5
+        HEAD_REF main
     PATCHES
-        bigobj.patch
-        unvendor_icu_and_find_dependency.patch # https://github.com/duckdb/duckdb/pull/16176 + https://github.com/duckdb/duckdb/pull/16197
+        extensions.patch
 )
 
 # Remove vendored dependencies which are not properly namespaced
@@ -17,10 +16,32 @@ file(REMOVE_RECURSE
     "${SOURCE_PATH}/third_party/tpce-tool"
 )
 
+if("excel" IN_LIST FEATURES)
+    vcpkg_from_github(
+        OUT_SOURCE_PATH DUCKDB_EXCCEL_SOURCE_PATH
+        REPO duckdb/duckdb-excel
+        REF 6c7a0270608d18053d23359834b775d40804a052
+        SHA512 442b4dc9405f34a9b624e5c4e874ebf2cffd1f5c477257b090613f987d83fcc02bc2293b8d163fffe018aa250e90bcadc9ac345e84dc4c96f4092c19c769f924
+        HEAD_REF main
+    )
+    file(RENAME "${DUCKDB_EXCCEL_SOURCE_PATH}" "${SOURCE_PATH}/extension/excel")
+endif()
+
+if("httpfs" IN_LIST FEATURES)
+    vcpkg_from_github(
+        OUT_SOURCE_PATH DUCKDB_HTTPFS_SOURCE_PATH
+        REPO duckdb/duckdb_httpfs
+        REF a4a014d4fc232c3087ee44a804959b5d67a0f8c5
+        SHA512 7e774a0714b863ecd49ad6ff07b8ecf780614f8e81d097dc01def37b48efb140efba003a5caa2deec9c83c636906fbcb44f5d74813da31f162d9d8b06016afe8
+        HEAD_REF main
+    )
+    file(RENAME "${DUCKDB_HTTPFS_SOURCE_PATH}" "${SOURCE_PATH}/extension/httpfs")
+endif()
+
 string(COMPARE EQUAL "${VCPKG_LIBRARY_LINKAGE}" "static" DUCKDB_BUILD_STATIC)
 string(COMPARE EQUAL "${VCPKG_LIBRARY_LINKAGE}" "dynamic" DUCKDB_BUILD_DYNAMIC)
 
-set(EXTENSION_LIST "autocomplete;httpfs;icu;json;tpcds;tpch")
+set(EXTENSION_LIST "autocomplete;excel;httpfs;icu;json;tpcds;tpch")
 set(BUILD_EXTENSIONS "")
 foreach(EXT ${EXTENSION_LIST})
     if(${EXT} IN_LIST FEATURES)

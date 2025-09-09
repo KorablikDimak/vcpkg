@@ -5,7 +5,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO danielaparker/jsoncons
     REF v${VERSION}
-    SHA512 31dcd40243ca695a2d038b2474b4c1ab2bf3df58ffe4fe11d2f084f7bf06b0a0327b4385b2aa60ce49a0a76e176d8c517cf759108f80860d9e2b5b6f11446aee
+    SHA512 500a14ba6cb49d9c1ef04f39779f20b6718e3f4ad4418738b97ea8ffd49ebd7b87db046d1592cc0340d4d016a931ae3eb6888097af1216a30fc4c9e0be0d1337
     HEAD_REF master
 )
 
@@ -16,7 +16,7 @@ vcpkg_cmake_configure(
 )
 
 vcpkg_cmake_install()
-vcpkg_cmake_config_fixup(CONFIG_PATH "lib/cmake/${PORT}")
+vcpkg_cmake_config_fixup(CONFIG_PATH "share/cmake/${PORT}")
 vcpkg_fixup_pkgconfig()
 
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug")

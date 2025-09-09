@@ -4,7 +4,7 @@ vcpkg_from_github(
   OUT_SOURCE_PATH SOURCE_PATH
   REPO KhronosGroup/ANARI-SDK
   REF "v${VERSION}"
-  SHA512 0a184fea1ab3afab72606d434d69cd3e171ae04d042fc6a425ba777c094af5a8225bb187a47176ac4afd6b2c57d0363f6e97e1f71b30137be09f26cc50590fac
+  SHA512 02db5cdf5f84df213b4d14f93363b7949d6c1a51c9cda616ef3612cb072f6b30bc942c5a6b0b9e89ea8b76b048fabd6bafcabde3c55380c3d90837116fa8b237
   HEAD_REF next_release
   PATCHES anari-lib-maybe-static-lib.patch
 )
