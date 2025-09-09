@@ -10729,7 +10729,7 @@
       "port-version": 0
     },
     "extendedcpp": {
-      "baseline": "2.2.4",
+      "baseline": "2.2.5",
       "port-version": 0
     },
     "telebot": {
