@@ -2,11 +2,13 @@ vcpkg_from_github(OUT_SOURCE_PATH SOURCE_PATH
     REPO SFML/SFML
     REF "${VERSION}"
     HEAD_REF master
-    SHA512 cee56eef93728aef9b361f8b1080572532ce5247c80a9d1be53b30dab4d67e8588316890555d4c4ba423e87b09f954327d70615e1ba72d458d8238fa84e589f9
+    SHA512 5fe38a11c146f5bb99d4ced8e97cd8872f384cc0531073480f7380ce19a3440b085da5ce66c7a06768728065bc645afecbeed0e1ecc88e28df1720a9cf55abdc
     PATCHES
         01-fix-dependency-resolve.patch
-        02-fix-pkgconfig.patch
         03-fix-android-install-path.patch
+        04-use-vcpkg-dependencies.patch
+        05-fix-pkgconfig-files.patch
+        06-isolate-dr-mp3.patch
 )
 
 if(VCPKG_TARGET_IS_LINUX)
@@ -52,9 +54,17 @@ if(EXISTS "${CURRENT_PACKAGES_DIR}/debug/lib/sfml-main-d.lib")
     file(REMOVE "${CURRENT_PACKAGES_DIR}/debug/lib/sfml-main-d.lib")
 endif()
 
+if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
+    vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/include/SFML/Config.hpp" "#if !defined(SFML_STATIC)" "#if 0")
+endif()
+
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include" "${CURRENT_PACKAGES_DIR}/debug/share")
 
 vcpkg_fixup_pkgconfig()
 
 file(COPY "${CMAKE_CURRENT_LIST_DIR}/usage" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}")
-vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/license.md")
+set(copyright_files "${SOURCE_PATH}/license.md")
+if("window" IN_LIST FEATURES OR "graphics" IN_LIST FEATURES)
+    list(APPEND copyright_files "${SOURCE_PATH}/extlibs/headers/glad/include/glad/egl.h")
+endif()
+vcpkg_install_copyright(FILE_LIST ${copyright_files})

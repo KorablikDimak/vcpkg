@@ -34,6 +34,9 @@ list(APPEND CMAKE_MODULE_PATH "${SCRIPTS}/cmake")
 # Increment this number if we intentionally need to invalidate all binary caches due a change in
 # the following scripts: 1
 include("${SCRIPTS}/cmake/execute_process.cmake")
+include("${SCRIPTS}/cmake/vcpkg_execute_in_download_mode.cmake")
+include("${SCRIPTS}/cmake/z_vcpkg_spdx.cmake")
+
 include("${SCRIPTS}/cmake/vcpkg_acquire_msys.cmake")
 include("${SCRIPTS}/cmake/vcpkg_add_to_path.cmake")
 include("${SCRIPTS}/cmake/vcpkg_apply_patches.cmake")
@@ -212,7 +215,7 @@ target system or to the host system. Use a prefixed variable instead.
 
     if(DEFINED PORT)
         # Always fixup RPATH on linux, osx and bsds unless explicitly disabled.
-        if(VCPKG_FIXUP_ELF_RPATH OR ((VCPKG_TARGET_IS_LINUX OR VCPKG_TARGET_IS_FREEBSD OR VCPKG_TARGET_IS_OPENBSD) AND NOT DEFINED VCPKG_FIXUP_ELF_RPATH))
+        if(VCPKG_FIXUP_ELF_RPATH OR ((VCPKG_TARGET_IS_LINUX OR VCPKG_TARGET_IS_BSD) AND NOT DEFINED VCPKG_FIXUP_ELF_RPATH))
             z_vcpkg_fixup_rpath_in_dir()
         endif()
         if(VCPKG_FIXUP_MACHO_RPATH OR (VCPKG_TARGET_IS_OSX AND NOT DEFINED VCPKG_FIXUP_MACHO_RPATH))

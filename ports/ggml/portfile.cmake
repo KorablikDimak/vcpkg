@@ -1,15 +1,15 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO ggml-org/ggml
-    REF baf5574bc768f614bdc4c0fce3c7bd20306bb26e
-    SHA512 1bc5e04d3b306051ec06cb8b15ba04b1558e135a19a055d67f65e082cffd3f94a13076cd0e4dddb90abc5b24da4adedfff35283758a7808f53d685d7de499fc2
+    REF v${VERSION}
+    SHA512 d786cdb4b8251c68c37b15196102b909509d04991102c20323513c8dc288bfa6d0ef838bb5d87d87b7eec6e5763c516b7cfd53b189928f783182bff5cced4645
     HEAD_REF master
     PATCHES
-        android-vulkan.diff
         cmake-config.diff
         pkgconfig.diff
         relax-link-options.diff
         vulkan-shaders-gen.diff
+        fix-vulkan-buffer-stream.diff
 )
 
 vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
@@ -74,6 +74,15 @@ vcpkg_cmake_configure(
         -DGGML_BUILD_EXAMPLES=OFF
         -DGGML_HIP=OFF
         -DGGML_SYCL=OFF
+        -DGGML_CUDA_NCCL=OFF
+        -DGGML_NATIVE=OFF
+        -DGGML_AVX=OFF
+        -DGGML_AVX2=OFF
+        -DGGML_AVX512=OFF
+        -DGGML_BMI2=OFF
+        -DGGML_FMA=OFF
+        -DGGML_F16C=OFF
+        -DGGML_SSE42=OFF
         ${FEATURE_OPTIONS}
     MAYBE_UNUSED_VARIABLES
         PKG_CONFIG_EXECUTABLE

@@ -20,7 +20,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO PixarAnimationStudios/OpenUSD
     REF "v${USD_VERSION}"
-    SHA512 66bf75486f09dce7085c5c80cc3e005c02c1dfbbfbd02c8e2e8fd9498030ca49cd6bc0a9b9db930d0559c745cf77ebaf822018de4bf798cce84fdf0aa89f0d84
+    SHA512 82f7bb4f77b295be79cd36f591f242276d36c0d589b0fca383344c27e70daf7e29151bf587528bb2fc2b2a8b974387a253993ace3caf5f79ae70f9ebbc71cf1a
     HEAD_REF release
     PATCHES
         003-fix-dep.patch
@@ -29,14 +29,11 @@ vcpkg_from_github(
         008-fix_clang8_compiler_error.patch
         009-vcpkg_install_folder_conventions.patch
         010-cmake_export_plugin_as_modules.patch
-        013-openimageio-3.patch
 )
 
 # Changes accompanying 003-fix-dep.patch
 file(REMOVE
     "${SOURCE_PATH}/cmake/modules/FindOpenColorIO.cmake"
-    "${SOURCE_PATH}/pxr/imaging/hgiVulkan/spirv_reflect.cpp"
-    "${SOURCE_PATH}/pxr/imaging/hgiVulkan/spirv_reflect.h"
     "${SOURCE_PATH}/pxr/imaging/hgiVulkan/vk_mem_alloc.cpp"
     "${SOURCE_PATH}/pxr/imaging/hgiVulkan/vk_mem_alloc.h"
 )
@@ -72,7 +69,12 @@ vcpkg_cmake_configure(
 
         -DPXR_ENABLE_PYTHON_SUPPORT:BOOL=OFF
         -DPXR_USE_DEBUG_PYTHON:BOOL=OFF
+
+        # USD never includes GNUInstallDirs, but its install rules use these.
+        -DCMAKE_INSTALL_BINDIR:STRING=bin
+        -DCMAKE_INSTALL_LIBDIR:STRING=lib
     MAYBE_UNUSED_VARIABLES
+        PXR_ENABLE_PTEX_SUPPORT
         PXR_USE_PYTHON_3
         PYTHON_EXECUTABLE
 )
@@ -87,7 +89,6 @@ if(NOT DEFINED VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "debug")
         )
     foreach(debug_target IN LISTS debug_targets)
         file(READ "${debug_target}" contents)
-        string(REPLACE "\${_IMPORT_PREFIX}/usd" "\${_IMPORT_PREFIX}/debug/usd" contents "${contents}")
         string(REPLACE "\${_IMPORT_PREFIX}/plugin" "\${_IMPORT_PREFIX}/debug/plugin" contents "${contents}")
         file(WRITE "${debug_target}" "${contents}")
     endforeach()
@@ -124,14 +125,9 @@ if(VCPKG_TARGET_IS_WINDOWS)
       file_replace_regex(${CURRENT_PACKAGES_DIR}/share/pxr/pxrTargets-debug.cmake "debug/lib/([a-zA-Z0-9_]+)\\.dll" "debug/bin/\\1.dll")
     endif()
     file_replace_regex(${CURRENT_PACKAGES_DIR}/share/pxr/pxrTargets-release.cmake "lib/([a-zA-Z0-9_]+)\\.dll" "bin/\\1.dll")
-
-    # fix plugInfo.json for runtime
-    file(GLOB_RECURSE PLUGINFO_FILES ${CURRENT_PACKAGES_DIR}/lib/usd/*/resources/plugInfo.json)
-    file(GLOB_RECURSE PLUGINFO_FILES_DEBUG ${CURRENT_PACKAGES_DIR}/debug/lib/usd/*/resources/plugInfo.json)
-    foreach(PLUGINFO ${PLUGINFO_FILES} ${PLUGINFO_FILES_DEBUG})
-        file_replace_regex(${PLUGINFO} [=["LibraryPath": "../../([a-zA-Z0-9_]+).dll"]=] [=["LibraryPath": "../../../bin/\1.dll"]=])
-    endforeach()
 endif()
 
 # Handle copyright
 vcpkg_install_copyright(FILE_LIST ${SOURCE_PATH}/LICENSE.txt)
+
+file(INSTALL "${CMAKE_CURRENT_LIST_DIR}/usage" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}")

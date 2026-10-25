@@ -9,6 +9,8 @@ vcpkg_from_github(
         exclude-testerutil.diff
         export-link-libs.diff
         sleefdft.pc.diff
+        seh-cpu-ext.diff
+        disable-msvc-builtin-math.diff # avoids an MSVC 19.51 ICE
 )
 
 vcpkg_check_features(OUT_FEATURE_OPTIONS options
@@ -42,6 +44,9 @@ vcpkg_fixup_pkgconfig()
 
 if(NOT VCPKG_CROSSCOMPILING)
     set(tools mkrename qmkrename mkalias mkdisp qmkdisp)
+    if(VCPKG_TARGET_IS_LINUX)
+        list(APPEND tools mkrename_gnuabi)
+    endif()
     if("dft" IN_LIST FEATURES)
         list(APPEND tools mkdispatch mkunroll)
     endif()
@@ -55,4 +60,3 @@ endif()
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
 
 vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/LICENSE.txt")
-

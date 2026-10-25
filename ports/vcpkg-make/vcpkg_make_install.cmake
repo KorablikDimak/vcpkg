@@ -41,7 +41,7 @@ function(vcpkg_make_install)
     vcpkg_make_get_shell(shell_var)
     set(shell_cmd "${shell_var}")
 
-    if(VCPKG_HOST_IS_FREEBSD OR VCPKG_HOST_IS_OPENBSD)
+    if(VCPKG_HOST_IS_BSD)
         find_program(Z_VCPKG_MAKE gmake REQUIRED)
     else()
         find_program(Z_VCPKG_MAKE NAMES make gmake NAMES_PER_DIR REQUIRED)
@@ -60,7 +60,7 @@ function(vcpkg_make_install)
 
     z_vcpkg_make_set_common_vars()
     z_vcpkg_get_global_property(prepare_flags_opts "make_prepare_flags_opts")
-    
+
     z_vcpkg_make_prepare_flags(${prepare_flags_opts})
 
     set(prepare_env_opts "")
@@ -115,7 +115,7 @@ function(vcpkg_make_install)
                     NO_PARALLEL_COMMAND ${configure_env} ${no_parallel_make_cmd_line}
                 )
             endif()
-            file(READ "${CURRENT_BUILDTREES_DIR}/${arg_LOGFILE_ROOT}-${target_no_slash}-${TARGET_TRIPLET}-${short_buildtype}-out.log" logdata) 
+            file(READ "${CURRENT_BUILDTREES_DIR}/${arg_LOGFILE_ROOT}-${target_no_slash}-${TARGET_TRIPLET}-${short_buildtype}-out.log" logdata)
             if(logdata MATCHES "Warning: linker path does not have real file for library")
                 message(FATAL_ERROR "libtool could not find a file being linked against!")
             endif()
@@ -135,7 +135,7 @@ function(vcpkg_make_install)
         file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}_tmp")
     endif()
 
-    # Remove libtool files since they contain absolute paths and are not necessary. 
+    # Remove libtool files since they contain absolute paths and are not necessary.
     file(GLOB_RECURSE libtool_files "${CURRENT_PACKAGES_DIR}/**/*.la")
     if(libtool_files)
         file(REMOVE ${libtool_files})

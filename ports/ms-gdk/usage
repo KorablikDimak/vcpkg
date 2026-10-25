@@ -1,16 +1,14 @@
+The Microsoft GDK headers select their platform from preprocessor definitions.
+The CMake targets below define _GAMING_DESKTOP automatically. If you use the
+headers without these targets (for example, from MSBuild or a manual include
+path), define _GAMING_DESKTOP yourself. In either case, include <windows.h>
+before GDK runtime headers such as XGameRuntime.h, XCurl.h, and GameChat2.h.
+
 The Microsoft GDK package provides CMake targets:
 
-  find_package(xbox.gameruntime CONFIG REQUIRED)
+  find_package(ms-gdk CONFIG REQUIRED)
   target_link_libraries(main PRIVATE Xbox::GameRuntime)
-
-  find_package(xbox.libhttpclient CONFIG REQUIRED)
   target_link_libraries(main PRIVATE Xbox::HTTPClient)
-
-  find_package(xbox.xcurl.api CONFIG REQUIRED)
   target_link_libraries(main PRIVATE Xbox::XCurl)
-
-  find_package(xbox.services.api.c CONFIG REQUIRED)
   target_link_libraries(main PRIVATE Xbox::XSAPI)
-
-  find_package(xbox.game.chat.2.cpp.api CONFIG REQUIRED)
   target_link_libraries(main PRIVATE Xbox::GameChat2)

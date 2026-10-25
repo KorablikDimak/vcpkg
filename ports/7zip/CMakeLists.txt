@@ -11,7 +11,7 @@ project(7zip LANGUAGES C CXX)
 # CPP/7zip/Bundles/Alone2/makefile : nmake (MSVC)
 # -> CPP/7zip/Bundles/Format7zF/Arc.mak
 # -> CPP/7zip/Bundles/7zip.mak
-# 
+#
 # CPP/7zip/Bundles/Alone2/(makefile.gcc|../../cmpl_<variant>.mak) : other
 # -> CPP/7zip/Bundles/Format7zF/Arc_gcc.mak
 # -> CPP/7zip/Bundles/7zip_gcc.mak
@@ -412,7 +412,7 @@ endif()
 # CPP/7zip/Bundles/Format7zF/makefile[_gcc].mak
 # CPP/7zip/7zip[_gcc].mak
 
-target_compile_definitions(7zip PRIVATE Z7_EXTERNAL_CODECS)
+target_compile_definitions(7zip PRIVATE Z7_EXTERNAL_CODECS Z7_PPMD_SUPPORT)
 target_sources(7zip PRIVATE
     CPP/7zip/Archive/ArchiveExports.cpp
     CPP/7zip/Archive/DllExports2.cpp

@@ -2,7 +2,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO paullouisageneau/libjuice
     REF "v${VERSION}"
-    SHA512 7364305b6768fdaef32cb7424c205e6dd11a3b8846ac52c8ce0cd66f022baae75f57293fefd2b9d80a89e3b138c82b4ef9b8b2313c2fb732db41947062ac2555
+    SHA512 42546914ce4bed8c6785c26e2378f1f8aa6ef9996fa6784dbcccb0f2a21597ac15e498782e9f8186f476c8873bde9edd9c8bf83912c2b676bbeeb1407c7289ff
     HEAD_REF master
     PATCHES
         dependencies.diff

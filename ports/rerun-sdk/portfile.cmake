@@ -2,17 +2,21 @@
 vcpkg_download_distfile(
     ARCHIVE
     URLS "https://github.com/rerun-io/rerun/releases/download/${VERSION}/rerun_cpp_sdk.zip"
-    FILENAME rerun_cpp_sdk.zip
-    SHA512 1351dd0937d6ddf73622b69a803a7233eb92e5ec52607fc1c775accd015d52eaf3259c0aea64cfac3109f1c55218fb6a4597bff5b067ccdd194cd8695b3f4c8c
+    FILENAME "rerun_cpp_sdk_${VERSION}.zip"
+    SHA512 d09874a89c9de67ef2ad324c109b0f0c25a8ed189655a3974b49dad9a82dd374b9f299b2da78537472b42477d30f965b9d903d4c751456e3abfa7a8f39bf71a4
 )
+
+# Workaround: The distributed SDK contains a prebuilt rerun_c that is built in Release mode.  On Windows, this means
+# that it always links to the release MSVC C runtime (CRT) and causes vcpkg's post-build CRT linkage check to fail for
+# Debug builds.  As such, this post-build check is suppressed for Windows builds.
+if(VCPKG_TARGET_IS_WINDOWS)
+    # TODO: Remove this policy when rerun ships a Debug rerun_c.
+    set(VCPKG_POLICY_SKIP_CRT_LINKAGE_CHECK enabled)
+endif()
 
 vcpkg_extract_source_archive(
     SOURCE_PATH
     ARCHIVE "${ARCHIVE}"
-    PATCHES
-        arrow-use-built-linkage.diff # https://github.com/rerun-io/rerun/pull/9550
-        arrow-use-find-dependency.diff # https://github.com/rerun-io/rerun/pull/9548
-        arrow-20-fix.diff # https://github.com/rerun-io/rerun/commit/d620a649c18d333b02682b190d2b1b656b800746
 )
 
 vcpkg_cmake_configure(
@@ -42,9 +46,25 @@ vcpkg_replace_string(
     "\${CMAKE_CURRENT_LIST_DIR}/../../lib/${LIBRERUN_C_FILE}"
 )
 
-vcpkg_install_copyright(FILE_LIST
-    "${SOURCE_PATH}/LICENSE-MIT"
-    "${SOURCE_PATH}/LICENSE-APACHE"
+# The upstream install rule globs every header in the source tree, which sweeps in a vendored copy of cxxopts that no
+# part of rerun-sdk includes.  Upstream considers it accidental (see rerun-io/rerun#5133).  Remove the unused, vendored
+# third-party libraries since they provide no functional benefit.
+file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/include/rerun/third_party")
+
+# rerun_c is prebuilt and statically links a large Rust dependency tree, so those licenses have to be acknowledged.
+# Provide instructions for how to obtain these licenses per the vcpkg maintainer guide.
+string(CONCAT RERUN_LICENSE_COMMENT
+    "The prebuilt rerun_c static library contains statically linked Rust dependencies.  Their licenses and "
+    "corresponding copyright notices can be obtained by checking out the matching Rerun release at "
+    "https://github.com/rerun-io/rerun/tree/${VERSION} and running `cargo-about` against "
+    "`crates/top/rerun_c/Cargo.toml`."
+)
+
+vcpkg_install_copyright(
+    COMMENT "${RERUN_LICENSE_COMMENT}"
+    FILE_LIST
+        "${SOURCE_PATH}/LICENSE-MIT"
+        "${SOURCE_PATH}/LICENSE-APACHE"
 )
 
 file(INSTALL "${CMAKE_CURRENT_LIST_DIR}/usage" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}")

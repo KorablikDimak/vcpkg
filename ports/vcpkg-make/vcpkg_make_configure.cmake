@@ -4,11 +4,15 @@ include("${CMAKE_CURRENT_LIST_DIR}/vcpkg_make.cmake")
 function(vcpkg_make_configure)
     cmake_parse_arguments(PARSE_ARGV 0 arg
         "AUTORECONF;COPY_SOURCE;DISABLE_MSVC_WRAPPERS;DISABLE_CPPFLAGS;DISABLE_DEFAULT_OPTIONS;DISABLE_MSVC_TRANSFORMATIONS"
-        "SOURCE_PATH"
+        "SOURCE_PATH;DEFAULT_OPTIONS_EXCLUDE"
         "OPTIONS;OPTIONS_DEBUG;OPTIONS_RELEASE;PRE_CONFIGURE_CMAKE_COMMANDS;LANGUAGES"
     )
 
     z_vcpkg_unparsed_args(FATAL_ERROR)
+
+    if(arg_DISABLE_DEFAULT_OPTIONS AND arg_DEFAULT_OPTIONS_EXCLUDE)
+        message(FATAL_ERROR "DISABLE_DEFAULT_OPTIONS cannot be used together with DEFAULT_OPTIONS_EXCLUDE.")
+    endif()
 
     # Can be set in the triplet to append options for configure
     if(DEFINED VCPKG_MAKE_CONFIGURE_OPTIONS)
@@ -27,7 +31,7 @@ function(vcpkg_make_configure)
 
     set(prepare_flags_opts "")
     if(arg_DISABLE_MSVC_WRAPPERS)
-        list(APPEND prepare_flags_opts "DISABLE_MSVC_WRAPPERS")        
+        list(APPEND prepare_flags_opts "DISABLE_MSVC_WRAPPERS")
     endif()
     if(arg_DISABLE_CPPFLAGS)
         list(APPEND prepare_flags_opts "DISABLE_CPPFLAGS")
@@ -66,7 +70,7 @@ function(vcpkg_make_configure)
     set(cm_FLAGS AR AS CC C CCAS CPP CXX FC FF GC LD LF LIBTOOL OBJC OBJXX R RC UPC Y)
 
     list(TRANSFORM cm_FLAGS APPEND "FLAGS")
-    vcpkg_backup_env_variables(VARS 
+    vcpkg_backup_env_variables(VARS
         ${cm_FLAGS}
     # General backup
         PATH
@@ -97,7 +101,9 @@ function(vcpkg_make_configure)
 
         set(opts "")
         if(NOT arg_DISABLE_DEFAULT_OPTIONS)
-          z_vcpkg_make_default_path_and_configure_options(opts AUTOMAKE CONFIG "${configup}")
+            z_vcpkg_make_default_path_and_configure_options(opts CONFIG "${configup}"
+                EXCLUDE_FILTER "${arg_DEFAULT_OPTIONS_EXCLUDE}"
+            )
         endif()
 
         set(configure_path_from_wd "./${relative_build_path}/configure")
@@ -114,26 +120,26 @@ function(vcpkg_make_configure)
                                     "${configure_env}"
                                  CONFIGURE_PATH
                                     "${configure_path_from_wd}"
-                                 OPTIONS 
+                                 OPTIONS
                                     ${BUILD_TRIPLET}
                                     ${arg_OPTIONS}
                                     ${opts}
                                     ${arg_OPTIONS_${configup}}
-                                 WORKING_DIRECTORY 
-                                    "${target_dir}" 
+                                 WORKING_DIRECTORY
+                                    "${target_dir}"
                                  ${extra_configure_opts}
                                 )
     endforeach()
 
     # Restore environment
-    vcpkg_restore_env_variables(VARS 
-        ${cm_FLAGS} 
+    vcpkg_restore_env_variables(VARS
+        ${cm_FLAGS}
         C_INCLUDE_PATH CPLUS_INCLUDE_PATH LIBRARY_PATH LD_LIBRARY_PATH
         INCLUDE LIB LIBPATH _CL_ _LINK_
         EMMAKEN_JUST_CONFIGURE
     )
 
-    if(VCPKG_HOST_IS_FREEBSD OR VCPKG_HOST_IS_OPENBSD)
+    if(VCPKG_HOST_IS_BSD)
         find_program(Z_VCPKG_MAKE gmake REQUIRED)
     else()
         find_program(Z_VCPKG_MAKE NAMES make gmake NAMES_PER_DIR REQUIRED)

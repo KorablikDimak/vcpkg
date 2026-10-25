@@ -1,12 +1,12 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO harfbuzz/harfbuzz
-    REF ${VERSION}
-    SHA512 1d0f19e6aebc6aa273e749fb7968eff851dcfb15a0b5ef6cf268c74e77a81175d845c20c9285be7e9a7cb79871cb08bdac5c9d802a50fc5bd11a7225d510f48f
+    REF "${VERSION}"
+    SHA512 46a7b6aca73bd3ff0d0559c63cbb17e1bcb004902916a75a37455812b5b1060fbe8332a557e0fc7e23e39bdb69570bf14fd9db86c278fe32a5cb0316c98a951e
     HEAD_REF master
     PATCHES
-        fix-win32-build.patch
-        add-parameter-name.patch
+        ${ANDROID_LOCALECONV_L_PATCH}
+        no-threads-on-emscripten.patch
 )
 
 if("icu" IN_LIST FEATURES)
@@ -54,6 +54,18 @@ else()
 endif()
 if("gdi" IN_LIST FEATURES)
     list(APPEND FEATURE_OPTIONS -Dgdi=enabled) # enable gdi helpers and uniscribe shaper backend (windows only)
+else()
+    list(APPEND FEATURE_OPTIONS -Dgdi=disabled)
+endif()
+if("png" IN_LIST FEATURES)
+    list(APPEND FEATURE_OPTIONS -Dpng=enabled)
+else()
+    list(APPEND FEATURE_OPTIONS -Dpng=disabled)
+endif()
+if("zlib" IN_LIST FEATURES)
+    list(APPEND FEATURE_OPTIONS -Dzlib=enabled)
+else()
+    list(APPEND FEATURE_OPTIONS -Dzlib=disabled)
 endif()
 
 if("introspection" IN_LIST FEATURES)
@@ -64,6 +76,13 @@ else()
     list(APPEND OPTIONS -Dintrospection=disabled)
 endif()
 
+# This option switches the link language to C++,
+# matching the C++ sources. This is necessary
+# for android-dynamic and maybe more platforms.
+if(VCPKG_TARGET_IS_ANDROID)
+    list(APPEND OPTIONS -Dwith_libstdcxx=true)
+endif()
+
 set(cxx_link_libraries "")
 if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
     block(PROPAGATE cxx_link_libraries)
@@ -71,18 +90,45 @@ if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
         vcpkg_cmake_get_vars(cmake_vars_file)
         include("${cmake_vars_file}")
         list(REMOVE_ITEM VCPKG_DETECTED_CMAKE_CXX_IMPLICIT_LINK_LIBRARIES ${VCPKG_DETECTED_CMAKE_C_IMPLICIT_LINK_LIBRARIES})
-        list(TRANSFORM VCPKG_DETECTED_CMAKE_CXX_IMPLICIT_LINK_LIBRARIES PREPEND "-l")
-        string(JOIN " " cxx_link_libraries ${VCPKG_DETECTED_CMAKE_CXX_IMPLICIT_LINK_LIBRARIES})
+        # Some toolchains (e.g. mingw-w64 cross gcc) report C++ implicit link
+        # libraries as resolved absolute archive paths. Those are already valid
+        # linker input and must be passed through verbatim; only bare library
+        # names get the "-l" prefix. Prepending "-l" to an absolute path produces
+        # a malformed "-l/abs/path/libfoo.a" token that downstream `ld` rejects.
+        set(cxx_link_flags "")
+        foreach(lib IN LISTS VCPKG_DETECTED_CMAKE_CXX_IMPLICIT_LINK_LIBRARIES)
+            if(IS_ABSOLUTE "${lib}")
+                list(APPEND cxx_link_flags "${lib}")
+            else()
+                list(APPEND cxx_link_flags "-l${lib}")
+            endif()
+        endforeach()
+        string(JOIN " " cxx_link_libraries ${cxx_link_flags})
     endblock()
+endif()
+
+set(LANGUAGES C CXX)
+if(VCPKG_TARGET_IS_APPLE)
+    list(APPEND LANGUAGES OBJC OBJCXX)
+endif()
+
+if(VCPKG_TARGET_IS_EMSCRIPTEN)
+    # The hb-gpu-* utilities fail to link on wasm32-emscripten (some objects
+    # are built with -pthread and some without, so wasm-ld rejects
+    # --shared-memory); only the libraries are useful here anyway.
+    list(APPEND OPTIONS -Dutilities=disabled)
 endif()
 
 vcpkg_configure_meson(
     SOURCE_PATH "${SOURCE_PATH}"
+    LANGUAGES ${LANGUAGES}
     OPTIONS
         ${FEATURE_OPTIONS}
         -Ddocs=disabled          # Generate documentation with gtk-doc
         -Dtests=disabled
         -Dbenchmark=disabled
+        -Dgpu_demo=disabled
+        -Dchafa=disabled     # no chafa feature; don't let hb-view auto-detect a system copy
         ${OPTIONS}
     OPTIONS_DEBUG
         ${OPTIONS_DEBUG}
@@ -115,13 +161,13 @@ if(cxx_link_libraries)
 endif()
 
 if(VCPKG_TARGET_IS_WINDOWS)
-    file(GLOB pc_files 
-        "${CURRENT_PACKAGES_DIR}/debug/lib/pkgconfig/*.pc" 
+    file(GLOB pc_files
+        "${CURRENT_PACKAGES_DIR}/debug/lib/pkgconfig/*.pc"
         "${CURRENT_PACKAGES_DIR}/lib/pkgconfig/*.pc"
     )
     foreach(pc_file IN LISTS pc_files)
         vcpkg_replace_string("${pc_file}"
-            "\\$\\{prefix\}\\/lib\\/([a-zA-Z0-9\-]*)\\.lib" 
+            "\\$\\{prefix\}\\/lib\\/([a-zA-Z0-9\-]*)\\.lib"
             "-l\\1"
             REGEX
             IGNORE_UNCHANGED
@@ -136,7 +182,7 @@ configure_file("${CMAKE_CURRENT_LIST_DIR}/harfbuzzConfig.cmake.in"
 
 vcpkg_list(SET TOOL_NAMES)
 if("glib" IN_LIST FEATURES)
-    vcpkg_list(APPEND TOOL_NAMES hb-subset hb-shape hb-info)
+    vcpkg_list(APPEND TOOL_NAMES hb-subset hb-shape hb-info hb-vector hb-raster)
     if("cairo" IN_LIST FEATURES)
         vcpkg_list(APPEND TOOL_NAMES hb-view)
     endif()
@@ -149,6 +195,4 @@ if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
     file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/bin" "${CURRENT_PACKAGES_DIR}/debug/bin")
 endif()
 
-vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/COPYING")
-
-file(INSTALL "${CMAKE_CURRENT_LIST_DIR}/usage" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}")
+vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/COPYING" "${SOURCE_PATH}/src/ms-use/COPYING")

@@ -1,12 +1,12 @@
-string(REGEX MATCH "^[0-9]+" VERSION_MAJOR ${VERSION})
-string(REGEX MATCH "^gz-([a-z-]+)" MATCHED_VALUE ${PORT})
-set(PACKAGE_NAME ${CMAKE_MATCH_1})
+string(REGEX MATCH "^[0-9]+" VERSION_MAJOR "${VERSION}")
+string(REGEX MATCH "^gz-([a-z-]+)" MATCHED_VALUE "${PORT}")
+set(PACKAGE_NAME "${CMAKE_MATCH_1}")
 
 ignition_modular_library(
-    NAME ${PACKAGE_NAME}
-    REF ${PORT}${VERSION_MAJOR}_${VERSION}
-    VERSION ${VERSION}
-    SHA512 d761aba28fc79af6bbb021215367e48e1b7449885d0410a0cabd09674a59b17132810ebb796fe0e1ddefc1510aba832fb192cc908156d8eae15e35c1afe464c7
+    NAME "${PACKAGE_NAME}"
+    REF "${PORT}${VERSION_MAJOR}_${VERSION}"
+    VERSION "${VERSION}"
+    SHA512 1419a5d6ea161f3115f15ca69eb09401c25e6ac4a0d4f4844cfde2ed4746d567c4d95643a4ad07467b720deda6cd0add5296613c27b067701b0d3afe162ffeba
     PATCHES
         find-modules.diff
         gz-find-package.diff
