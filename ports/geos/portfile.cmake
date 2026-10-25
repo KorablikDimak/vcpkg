@@ -1,7 +1,7 @@
 vcpkg_download_distfile(ARCHIVE
     URLS "https://download.osgeo.org/geos/geos-${VERSION}.tar.bz2"
     FILENAME "geos-${VERSION}.tar.bz2"
-    SHA512 c9f06396af4be8231930e48f249c550578c0ed9380a0d9da24e4d602fe9f14390846d02bd95531b3bf3ff8d554f5735da0e4b975dee24932d1f488d685e4aa72
+    SHA512 ac5890dfc92fdebc667cc96a89cf7886873c5867dde79fb45966e6ed294d40e4dbd11c9b6a147d47441dcb50404da496df477ff7b757ef13de79f843ba1e400e
 )
 vcpkg_extract_source_archive(SOURCE_PATH
     ARCHIVE "${ARCHIVE}"
@@ -50,4 +50,10 @@ endif()
 vcpkg_copy_pdbs()
 
 file(INSTALL "${CMAKE_CURRENT_LIST_DIR}/usage" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}")
-vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/COPYING")
+vcpkg_install_copyright(
+    FILE_LIST
+        "${SOURCE_PATH}/COPYING"
+        "${SOURCE_PATH}/src/deps/ryu/LICENSE"
+        "${SOURCE_PATH}/src/deps/ryu/LICENSE-Apache2"
+        "${SOURCE_PATH}/src/deps/ryu/LICENSE-Boost"
+)

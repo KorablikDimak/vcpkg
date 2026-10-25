@@ -2,19 +2,30 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO stlab/copy-on-write
     REF "v${VERSION}"
-    SHA512 14fd31c27a45111050b5b4e7164ef1467cecc0c1b258172d954700a0e0b6ce69cb28b700d5ca145c37974e4fdffe1563e13ea627b6cce11599381d7aa6cd0f54
+    SHA512 c7e9036862aafb1cc651eb8785edb09c11b36245731fb0213d6cc72c7cf521cd5954e6fd40aa5349148e103f847e62c0736ea943e5f097b46e96c5ba0a125151
     HEAD_REF main
     PATCHES
+        disable-cpm.patch
         disable-tests.patch
 )
+
+# Replace CPM and download cpp-library directly to avoid issues with FETCHCONTENT_FULLY_DISCONNECTED
+vcpkg_from_github(
+    OUT_SOURCE_PATH PACKAGE_PROJECT_PATH
+    REPO stlab/cpp-library
+    REF "v5.4.1"
+    SHA512 68e6bdb76627e5019b4dbe49cd7450c38011d1e721f9e93b3ffaf2d807a01883e243b069292e3b44e7dc8142a0e235facccaa877607ab1a5c4a4db2764d5382e
+    HEAD_REF master
+)
+file(RENAME "${PACKAGE_PROJECT_PATH}" "${SOURCE_PATH}/cmake/cpp-library")
 
 set(VCPKG_BUILD_TYPE release) # header-only port
 
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}"
     OPTIONS
-        ${FEATURE_OPTIONS}
-        -Dstlab-copy-on-write_IS_TOP_LEVEL=OFF
+        -DBUILD_TESTING=OFF
+        -DCPP_LIBRARY_VERSION=${VERSION}
 )
 
 vcpkg_cmake_install()

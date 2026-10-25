@@ -87,6 +87,12 @@ vcpkgCheckRepoTool()
             echo "On Alpine:"
             echo "  apk add build-base cmake ninja zip unzip curl git"
             echo "  (and export VCPKG_FORCE_SYSTEM_BINARIES=1)"
+            echo "On Solaris and illumos distributions:"
+            echo "  pkg install web/curl compress/zip compress/unzip"
+            echo "On FreeBSD:"
+            echo "  pkg install curl zip unzip tar"
+            echo "On OpenBSD:"
+            echo "  pkg_add curl zip unzip tar"
             exit 1
         fi
     fi
@@ -154,12 +160,19 @@ vcpkgDownloadFile()
     mv "$downloadPath.part" "$downloadPath"
 }
 
-vcpkgExtractTar()
+vcpkgExtractArchive()
 {
     archive=$1; toPath=$2
     rm -rf "$toPath" "$toPath.partial"
-    mkdir -p "$toPath.partial"
-    $(cd "$toPath.partial" && tar xzf "$archive")
+    case "$archive" in
+        *.tar.gz)
+            mkdir -p "$toPath.partial"
+            $(cd "$toPath.partial" && tar xzf "$archive")
+            ;;
+        *.zip)
+            unzip -qd "$toPath.partial" "$archive"
+            ;;
+    esac
     mv "$toPath.partial" "$toPath"
 }
 
@@ -202,25 +215,25 @@ fi
 if [ "$vcpkgDownloadTool" = "ON" ]; then
     vcpkgDownloadFile "https://github.com/microsoft/vcpkg-tool/releases/download/$VCPKG_TOOL_RELEASE_TAG/$vcpkgToolName" "$vcpkgRootDir/vcpkg" $vcpkgToolReleaseSha
 else
-    vcpkgToolReleaseTarball="$VCPKG_TOOL_RELEASE_TAG.tar.gz"
-    vcpkgToolUrl="https://github.com/microsoft/vcpkg-tool/archive/$vcpkgToolReleaseTarball"
+    vcpkgToolReleaseArchive="$VCPKG_TOOL_RELEASE_TAG.zip"
+    vcpkgToolUrl="https://github.com/microsoft/vcpkg-tool/archive/$vcpkgToolReleaseArchive"
     baseBuildDir="$vcpkgRootDir/buildtrees/_vcpkg"
     buildDir="$baseBuildDir/build"
-    tarballPath="$downloadsDir/$vcpkgToolReleaseTarball"
+    archivePath="$downloadsDir/$vcpkgToolReleaseArchive"
     srcBaseDir="$baseBuildDir/src"
     srcDir="$srcBaseDir/vcpkg-tool-$VCPKG_TOOL_RELEASE_TAG"
 
-    if [ -e "$tarballPath" ]; then
-        vcpkgCheckEqualFileHash "$vcpkgToolUrl" "$tarballPath" "$vcpkgToolReleaseSha"
+    if [ -e "$archivePath" ]; then
+        vcpkgCheckEqualFileHash "$vcpkgToolUrl" "$archivePath" "$vcpkgToolReleaseSha"
     else
         echo "Downloading vcpkg tool sources"
-        vcpkgDownloadFile "$vcpkgToolUrl" "$tarballPath" "$vcpkgToolReleaseSha"
+        vcpkgDownloadFile "$vcpkgToolUrl" "$archivePath" "$vcpkgToolReleaseSha"
     fi
 
     echo "Building vcpkg-tool..."
     rm -rf "$baseBuildDir"
     mkdir -p "$buildDir"
-    vcpkgExtractTar "$tarballPath" "$srcBaseDir"
+    vcpkgExtractArchive "$archivePath" "$srcBaseDir"
     cmakeConfigOptions="-DCMAKE_BUILD_TYPE=Release -G 'Ninja' -DVCPKG_DEVELOPMENT_WARNINGS=OFF"
 
     if [ "${VCPKG_MAX_CONCURRENCY}" != "" ] ; then
@@ -251,6 +264,7 @@ You can opt-out of telemetry by re-running the bootstrap-vcpkg script with -disa
 passing --disable-metrics to vcpkg on the command line,
 or by setting the VCPKG_DISABLE_METRICS environment variable.
 
-Read more about vcpkg telemetry at docs/about/privacy.md
+Read more about vcpkg telemetry at https://learn.microsoft.com/vcpkg/about/privacy
+Read the Microsoft Privacy Statement at https://go.microsoft.com/fwlink/?LinkId=521839
 EOF
 fi

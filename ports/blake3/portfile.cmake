@@ -2,7 +2,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO BLAKE3-team/BLAKE3
     REF "${VERSION}"
-    SHA512 a47ab31ae96d54884f8377e831028e3b503009bf89ac5a4383b83d3fe1cca5c99eefb7486fba9c7f459a7dbbad15754d1354f4e20e7bb0bb63a9e06ee8ce3507
+    SHA512 02374ce3c4fe11cabaf16ba1fb711058411818778dceccd7723b765aaf5436d2ec1419c28ebce6b3085ff96384f80ddccbca10d992bdc997f4e7429320c310de
     HEAD_REF main
     PATCHES
         fix-windows-arm-build-error.patch

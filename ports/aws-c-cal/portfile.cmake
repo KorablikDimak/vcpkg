@@ -2,9 +2,8 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO awslabs/aws-c-cal
     REF "v${VERSION}"
-    SHA512 c63d7efb776e30d0bc4e71b189b6e3af09514ae1f25e503b61902fc7610b036ece0b746c09dd1f55b317ac6f2856b5ee93d7e2186ae00ea32ee9e6e2df31e474
+    SHA512 dfe28df7ff859e73006214f2dcf96bd99cdddfcca3b185f887df82e3493f8beaaf19eda2bf16f7cf7b139bc0f776be426d802c960a7067ed3a315f535909ef2f
     HEAD_REF master
-    PATCHES remove-libcrypto-messages.patch
 )
 
 if (NOT (VCPKG_TARGET_IS_WINDOWS OR VCPKG_TARGET_IS_OSX))
@@ -14,7 +13,7 @@ endif()
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}"
     OPTIONS
-        "-DCMAKE_MODULE_PATH=${CURRENT_INSTALLED_DIR}/share/aws-c-common" # use extra cmake files
+        "-DCMAKE_PREFIX_PATH=${CURRENT_INSTALLED_DIR}/share/aws-c-common/modules" # use extra cmake files
         -DBUILD_TESTING=FALSE
         -DUSE_OPENSSL=${USE_OPENSSL}
 )
@@ -35,4 +34,8 @@ file(REMOVE_RECURSE
 
 vcpkg_copy_pdbs()
 
-vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/LICENSE")
+vcpkg_install_copyright(
+    FILE_LIST
+        "${SOURCE_PATH}/LICENSE"
+        "${SOURCE_PATH}/NOTICE"
+)

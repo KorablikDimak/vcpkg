@@ -3,8 +3,8 @@ set(VCPKG_BUILD_TYPE release)  # header-only library
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO MistEO/meojson
-    REF v4.5.0
-    SHA512 f3e85f6a51a8dc3a7e9c11eb5e30553ecc7cec64a50e1acbce7ca7f2aaba76ab25bc7eb6575625b4294975142a3aefe9d9d6f4e147242f73192e934fc7be849a
+    REF v${VERSION}
+    SHA512 b6756252566e23d3fb10261afd2abe8fa7ff7c3c483343a60fc2a07dd10b0ff750244906325923ce97b699981181ee5805760385a9924f635aefe3a794bfa220
     HEAD_REF master
 )
 

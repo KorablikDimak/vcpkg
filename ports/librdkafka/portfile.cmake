@@ -2,7 +2,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO confluentinc/librdkafka
     REF "v${VERSION}"
-    SHA512 82d96cc77905e203a0178e378c78192b41afdc8e16fafd80cc16464fde2dc089b918d4664fd58857b5c888cdd8c40ffabe58993e9a7c2e2ff3e4ac9496927826
+    SHA512 8d1cebb0dcefe3eb0905381e1a6bd1239b90e35be1924c9538d7ffcbba4a0a5b42febccc10465ea3a3fab15ecff2371c44a971cfe2835d8743c39e181fcd99e5
     HEAD_REF master
     PATCHES
         lz4.patch
@@ -68,8 +68,5 @@ endif()
 
 # Handle copyright
 vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/LICENSES.txt" )
-
-# Install usage
-configure_file("${CMAKE_CURRENT_LIST_DIR}/usage" "${CURRENT_PACKAGES_DIR}/share/${PORT}/usage" @ONLY)
 
 vcpkg_fixup_pkgconfig()

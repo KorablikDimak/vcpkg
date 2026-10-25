@@ -6,7 +6,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO baresip/re
     REF "v${VERSION}"
-    SHA512 460ebb7fee54d26dff7aab6420455073c3c90708eff8ef3a9a2cdc6922deeeb6b950d3791bc17d773bb1955513b2f300428fb364d13130d51536b6ef07aa7e9c
+    SHA512 a0da0078662f6d46ad6cfc981fe3ecdee02f9b82e7902691cf164b71002f37694142a5d484ed8c6d5428f16599da9ef2fc4bcf1792818a534e76f3dd72c739ed
     HEAD_REF main
     PATCHES
 )
@@ -29,5 +29,4 @@ vcpkg_cmake_config_fixup(PACKAGE_NAME libre CONFIG_PATH lib/cmake/libre)
 
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
 
-file(COPY "${CMAKE_CURRENT_LIST_DIR}/usage" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}")
 vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/LICENSE")

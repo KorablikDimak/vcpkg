@@ -2,7 +2,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO NVIDIA/cutlass
     REF "v${VERSION}"
-    SHA512 a08aac281fb3bdea82c0a044dc643c40e4803d02e55bbea450021cb7a5472aed86e79c5df41cd981976af8403f18cc48d8069045c4e68339430d3a3caeb109ac
+    SHA512 cbdf86439281f5c037eebe95aa2a74fe02a384badeda772b95c44e6e64b42d1e009253836dd1139471d7c4a7a7264303ecf8a3a114aacc8ba47aa39c542d57ab
     HEAD_REF main
 )
 
@@ -15,6 +15,11 @@ list(APPEND FEATURE_OPTIONS
     "-DCMAKE_CUDA_COMPILER=${NVCC}"
     "-DCUDAToolkit_ROOT=${cuda_toolkit_root}"
 )
+
+list(APPEND CMAKE_MODULE_PATH "${CURRENT_INSTALLED_DIR}/share/cudnn")
+find_package(CUDNN REQUIRED)
+get_filename_component(CUDNN_LIBRARY_DIR "${CUDNN_LIBRARIES}" DIRECTORY)
+set(ENV{CUDNN_PATH} "${CUDNN_LIBRARY_DIR};${CUDNN_INCLUDE_DIRS}")
 
 
 vcpkg_cmake_configure(
@@ -40,7 +45,21 @@ vcpkg_cmake_configure(
 vcpkg_cmake_install()
 vcpkg_cmake_config_fixup(CONFIG_PATH "lib/cmake/NvidiaCutlass" PACKAGE_NAME "NvidiaCutlass")
 
-
+vcpkg_replace_string(
+    "${CURRENT_PACKAGES_DIR}/include/cutlass/version.h"
+    "@CUTLASS_VERSION@"
+    "${VERSION}"
+)
+vcpkg_replace_string(
+    "${CURRENT_PACKAGES_DIR}/include/cutlass/version.h"
+    "@CUTLASS_REVISION@"
+    "v${VERSION}"
+)
+vcpkg_replace_string(
+    "${CURRENT_PACKAGES_DIR}/share/NvidiaCutlass/NvidiaCutlassTargets.cmake"
+    "INTERFACE_COMPILE_DEFINITIONS \""
+    "INTERFACE_COMPILE_DEFINITIONS \"CUTLASS_VERSIONS_GENERATED;"
+)
 
 file(REMOVE_RECURSE
     "${CURRENT_PACKAGES_DIR}/debug"

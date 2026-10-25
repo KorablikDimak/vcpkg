@@ -3,14 +3,18 @@ if(VCPKG_TARGET_IS_WINDOWS)
     vcpkg_check_linkage(ONLY_STATIC_LIBRARY)
 endif()
 
-vcpkg_from_github(
-    OUT_SOURCE_PATH SOURCE_PATH
-    REPO apache/avro
-    REF "release-${VERSION}"
-    SHA512 8cc6ef3cf1e0a919118c8ba5817a1866dc4f891fa95873c0fe1b4b388858fbadee8ed50406fa0006882cab40807fcf00c5a2dcd500290f3868d9d06b287eacb6
-    HEAD_REF master
+vcpkg_download_distfile(ARCHIVE
+    URLS "https://archive.apache.org/dist/avro/avro-${VERSION}/avro-src-${VERSION}.tar.gz"
+    FILENAME "avro-src-${VERSION}.tar.gz"
+    SHA512 a31ad410d75c0e7f58fc9d9b7e7989dae12f328524806f6d64fdae22ddb9112fe2adc5fb74ee83df2135b87bd6618e8765a823220b2a0a162d1684192b9926da
+)
+
+vcpkg_extract_source_archive(
+    SOURCE_PATH
+    ARCHIVE "${ARCHIVE}"
     PATCHES
         avro.patch          # Private vcpkg build fixes
+        bswap.patch
 )
 
 vcpkg_cmake_configure(
@@ -39,4 +43,8 @@ if(VCPKG_LIBRARY_LINKAGE STREQUAL "static" AND NOT VCPKG_TARGET_IS_WINDOWS)
     file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/bin" "${CURRENT_PACKAGES_DIR}/debug/bin")
 endif()
 
-vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/lang/c/LICENSE")
+vcpkg_install_copyright(
+    FILE_LIST
+        "${SOURCE_PATH}/lang/c/LICENSE"
+        "${SOURCE_PATH}/lang/c/NOTICE"
+)

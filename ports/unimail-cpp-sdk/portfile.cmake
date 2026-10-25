@@ -2,7 +2,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO unimails/unimail-cpp-sdk
     REF "v${VERSION}"
-    SHA512 96587849338e7f88a322ddb937a43aa245026157254d22e2e186ad8b6f6a7f655c15943573e5d87c991e627d9a7b419e931f24694d0579973f2dae81ffd73d87
+    SHA512 9aaadbfb348bc1b76708c66fbdc7a761431b7ad634a9b8390486fb997b35f694119363d653b486d87e65fca3ac2d4db035a81ce154e2a09b10385e37f4a42f0b
     HEAD_REF master
 )
 
@@ -15,9 +15,6 @@ vcpkg_cmake_configure(
 vcpkg_cmake_install()
 
 vcpkg_cmake_config_fixup(CONFIG_PATH lib/cmake/unimail-cpp-sdk)
-
-file(INSTALL "${CMAKE_CURRENT_LIST_DIR}/usage"
-     DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}")
 
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
 

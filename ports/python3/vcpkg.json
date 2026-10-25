@@ -1,10 +1,9 @@
 {
   "name": "python3",
-  "version": "3.12.9",
-  "port-version": 3,
+  "version": "3.14.8",
   "description": "The Python programming language",
   "homepage": "https://github.com/python/cpython",
-  "license": "Python-2.0",
+  "license": "Python-2.0 AND MIT",
   "supports": "!uwp & !mingw",
   "dependencies": [
     {
@@ -67,6 +66,11 @@
           "default-features": false
         },
         {
+          "name": "libb2",
+          "default-features": false,
+          "platform": "!windows"
+        },
+        {
           "name": "libffi",
           "default-features": false
         },
@@ -74,6 +78,7 @@
           "name": "liblzma",
           "default-features": false
         },
+        "mpdecimal",
         {
           "name": "openssl",
           "default-features": false
@@ -86,12 +91,16 @@
           "name": "vcpkg-pkgconfig-get-modules",
           "host": true,
           "platform": "windows & !mingw"
-        }
+        },
+        "zstd"
       ]
     },
     "readline": {
-      "description": "Build with readline. Requires system readline to be installed",
-      "supports": "!windows"
+      "description": "Build with readline.",
+      "supports": "!windows",
+      "dependencies": [
+        "readline"
+      ]
     }
   }
 }

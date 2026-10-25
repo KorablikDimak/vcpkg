@@ -2,7 +2,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO artem-ogre/CDT
     REF "${VERSION}"
-    SHA512 9b21553c6f377b257ef408d7f77e9b564175fdbe33dd5fdce6ddeb0aece258a5d77b00ad054d22dfa712952ba38a6717ef7b0a01b8950f97b073f6ebd81c3dd4
+    SHA512 23461a24dce11716feb6ceb3b681decb7fe69a62dc7427cfc1f52fc156f9b777cf8f15fa22fa88732f0c0a1814a11ba179269f0826ea6555c4c66fb4a0856f94
     HEAD_REF master
 )
 
@@ -20,6 +20,7 @@ vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}/CDT"
     OPTIONS
         ${FEATURE_OPTIONS}
+        -DCMAKE_DISABLE_FIND_PACKAGE_Doxygen=ON
 )
 
 vcpkg_cmake_install()
@@ -29,4 +30,8 @@ if (CDT_USE_AS_COMPILED_LIBRARY)
     file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
 endif()
 
-vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/LICENSE")
+vcpkg_install_copyright(FILE_LIST
+    "${SOURCE_PATH}/LICENSE"
+    "${SOURCE_PATH}/CDT/include/portable_nth_element.hpp"
+    "${SOURCE_PATH}/CDT/include/predicates.h"
+)

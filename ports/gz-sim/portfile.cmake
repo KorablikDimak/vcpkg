@@ -1,14 +1,17 @@
-string(REGEX MATCH "^[0-9]+" VERSION_MAJOR ${VERSION})
+# This port is not tested in vcpkg's curated registry due to excessive memory consumption
+# that cause reliability problems for other customers.
+# It must be checked manually after updates.
+string(REGEX MATCH "^[0-9]+" VERSION_MAJOR "${VERSION}")
 set(PACKAGE_NAME gazebo)
 
 vcpkg_find_acquire_program(PYTHON3)
 get_filename_component(PYTHON3_DIR "${PYTHON3}" DIRECTORY)
 
 ignition_modular_library(
-   NAME ${PACKAGE_NAME}
-   REF ${PORT}${VERSION_MAJOR}_${VERSION}
-   VERSION ${VERSION}
-   SHA512 4ac9debe27a41233c7c2116bd80f277ebe74f4ae639f06555cec4209bb7af6fe741197705fac222b4e00c8493daaf701b1eefee4ff639fdea70703bed80e0f8a
+   NAME "${PACKAGE_NAME}"
+   REF "${PORT}${VERSION_MAJOR}_${VERSION}"
+   VERSION "${VERSION}"
+   SHA512 81739e8ec0a954ce2470f3994502bafac8a288bf105d3108b955c7812b3788aa032b17d0e75bd6a2d524fcb0914de9449043af1ef24d21d69374f83b2ede55c6
    OPTIONS
       -DSKIP_PYBIND11=ON
       "-DPython3_EXECUTABLE=${PYTHON3}"

@@ -2,10 +2,8 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO ebiggers/libdeflate
     REF "v${VERSION}"
-    SHA512 c20a772aeeac593c34e8a68be80b23cb116699141de269d94df072636b6c90572f541b3344d830325cf45b03e7a1303e0274d79ce96c360fd421d4eb05ae1f92
+    SHA512 06605eabce8635b82e03863c87b515696d08b8a1fc36b746b44b660989613d2ebd6ca1bb13dd0f88244846894dbf5a15169dd443c34dcda64e960fdbd08a8d3b
     HEAD_REF master
-    PATCHES
-        remove_wrong_c_flags_modification.diff
 )
 
 vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
@@ -25,6 +23,7 @@ vcpkg_cmake_configure(
         -DLIBDEFLATE_BUILD_SHARED_LIB=${LIBDEFLATE_BUILD_SHARED}
         -DLIBDEFLATE_BUILD_STATIC_LIB=${LIBDEFLATE_BUILD_STATIC}
         -DLIBDEFLATE_BUILD_GZIP=OFF
+        -DLIBDEFLATE_USER_SET_RELEASE_FLAGS=ON # Prevent wrong C flags modification
         ${FEATURE_OPTIONS}
 )
 

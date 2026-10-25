@@ -8,12 +8,18 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO libjpeg-turbo/libjpeg-turbo
     REF "${VERSION}"
-    SHA512 4937b63a27818cdb5087091b2d78837f7f385fd6b4d3e3fcaf4d9ad2944fed4a00020dcacb33e9c2fd4b0f9d9851fb4051ed3da86f606aca5167357262a73e89
+    SHA512 1ce063e9e126d55019385da3a6ff4521a9a3958edeab15e2465ae3435026dac6e598277eea066173ada47da37159d0f7812b2227869c10dd141dcfe2ddeab720
     HEAD_REF master
     PATCHES
-        add-options-for-exes-docs-headers.patch
+        add-options-for-docs-headers.patch
         # workaround for vcpkg bug see #5697 on github for more information
         workaround_cmake_system_processor.patch
+        # apply libjpeg-turbo patches for dependency issues https://github.com/libjpeg-turbo/libjpeg-turbo/issues/901
+        # This patch file contains changes from the following upstream commits:
+        # https://github.com/libjpeg-turbo/libjpeg-turbo/commit/95156233739078e7d4de0aeeacc4b0595630f393
+        # https://github.com/libjpeg-turbo/libjpeg-turbo/commit/240e20d87c0b7d17614687ddc55ccd1fc631daf9
+        # https://github.com/libjpeg-turbo/libjpeg-turbo/commit/204e5c2bed4401309c26dc6ed95001e2fc50f833
+        system-dependency-fixes-pr-901.patch
 )
 
 if(VCPKG_TARGET_ARCHITECTURE STREQUAL "wasm32")
@@ -39,7 +45,7 @@ vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
     FEATURES
         jpeg7 WITH_JPEG7
         jpeg8 WITH_JPEG8
-        tools ENABLE_EXECUTABLES
+        tools WITH_TOOLS
 )
 
 vcpkg_cmake_configure(
@@ -47,13 +53,11 @@ vcpkg_cmake_configure(
     OPTIONS
         -DENABLE_STATIC=${ENABLE_STATIC}
         -DENABLE_SHARED=${ENABLE_SHARED}
-        -DINSTALL_DOCS=OFF
         -DWITH_CRT_DLL=${WITH_CRT_DLL}
+        -DWITH_SYSTEM_SPNG=ON
+        -DWITH_SYSTEM_ZLIB=ON
         ${FEATURE_OPTIONS}
         ${LIBJPEGTURBO_SIMD}
-    OPTIONS_DEBUG
-        -DENABLE_EXECUTABLES=OFF
-        -DINSTALL_HEADERS=OFF
     MAYBE_UNUSED_VARIABLES
         WITH_CRT_DLL
 )
@@ -61,7 +65,7 @@ vcpkg_cmake_configure(
 vcpkg_cmake_install()
 vcpkg_copy_pdbs()
 
-if(ENABLE_EXECUTABLES)
+if(WITH_TOOLS)
     vcpkg_copy_tools(
         TOOL_NAMES cjpeg djpeg jpegtran rdjpgcom wrjpgcom
         AUTO_CLEAN
@@ -104,7 +108,9 @@ endif()
 file(REMOVE_RECURSE
      "${CURRENT_PACKAGES_DIR}/debug/share"
      "${CURRENT_PACKAGES_DIR}/debug/include"
-     "${CURRENT_PACKAGES_DIR}/share/man")
+     "${CURRENT_PACKAGES_DIR}/share/man"
+     "${CURRENT_PACKAGES_DIR}/share/doc"
+)
 
 file(COPY "${CMAKE_CURRENT_LIST_DIR}/usage" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}")
 file(COPY "${CMAKE_CURRENT_LIST_DIR}/vcpkg-cmake-wrapper.cmake" DESTINATION "${CURRENT_PACKAGES_DIR}/share/jpeg")

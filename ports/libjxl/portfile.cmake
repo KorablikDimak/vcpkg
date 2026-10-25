@@ -2,11 +2,10 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO libjxl/libjxl
     REF "v${VERSION}"
-    SHA512 0cfd81d9d3b783f96bd04f244d73ffbc12186c89993d46064a2751bef0a446a5e86be05add5c10f60d4482d39333d9bf3f9a866d6eb84f8fa0d4e8b5828fd74c
+    SHA512 71d45123e47588c8028c0e01a7820c7a18d98df05c29b5318ab6858eaff5f249879763907201ba19a93f817c6ef75c393c1974d2a0cc8e461c4e2709ca6fa45f
     HEAD_REF main
     PATCHES
         fix-dependencies.patch
-        avoid-exe-linker-flags.patch # https://github.com/libjxl/libjxl/pull/4229
         msvc-remove-libm.patch
 )
 
@@ -31,7 +30,6 @@ vcpkg_cmake_configure(
         "-DJPEGXL_VERSION=${JPEGXL_VERSION}"
         -DJPEGXL_FORCE_SYSTEM_HWY=ON
         -DJPEGXL_FORCE_SYSTEM_BROTLI=ON
-        -DJPEGXL_FORCE_SYSTEM_HWY=ON
         -DJPEGXL_FORCE_SYSTEM_LCMS2=ON
         ${FEATURE_OPTIONS}
         -DJPEGXL_ENABLE_BENCHMARK=OFF
@@ -60,7 +58,7 @@ vcpkg_copy_pdbs()
 vcpkg_fixup_pkgconfig()
 
 if(JPEGXL_ENABLE_TOOLS)
-    vcpkg_copy_tools(TOOL_NAMES cjxl djxl jxlinfo AUTO_CLEAN)
+    vcpkg_copy_tools(TOOL_NAMES cjxl djxl jxlinfo jxltran AUTO_CLEAN)
 endif()
 
 if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")

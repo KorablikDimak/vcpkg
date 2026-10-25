@@ -7,10 +7,8 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO laurencelundblade/QCBOR
     REF v${VERSION}
-    SHA512 3961cbcde2dde3565b68f92b53e92db31b649b71bc683a8439bada3aa6c44f4727747ca7b4ad35c4ca6f5bd0594abc2bf36a6ce0c7452eb412e8dcd55e946585
+    SHA512 e0630f5e5bc614fb87dee6d8adb32d6ea2d896bdf7074df38cb99833b2136dd7417df72bbff2a4c935def19064ea15c0895e54af5aed2ae1328e64d224e12655
     HEAD_REF master
-    PATCHES
-        install.patch
 )
 
 vcpkg_cmake_configure(
@@ -20,8 +18,9 @@ vcpkg_cmake_configure(
 )
 
 vcpkg_cmake_install()
+vcpkg_cmake_config_fixup(CONFIG_PATH lib/cmake/qcbor)
 
-file(REMOVE_RECURSE 
+file(REMOVE_RECURSE
     "${CURRENT_PACKAGES_DIR}/debug/include"
     "${CURRENT_PACKAGES_DIR}/debug/share"
 )
